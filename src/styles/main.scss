@@ -1,0 +1,49 @@
+$bg: grey;
+
+body{
+  background: whitesmoke;
+}
+img{
+  width: 100px;
+  height: 100px;
+}
+div#memory-board{
+  background: #89D0CC;
+
+  width: 540px;
+  height: 540px;
+  padding: 20px;
+  margin:20px;
+  border-radius: 30px;
+  float: left;
+}
+div#memory-board > div{
+  background:#FFD02A;
+  border-radius: 10px;
+  width: 95px;
+  height: 95px;
+  float: left;
+  padding: 10px;
+  margin:10px;
+  font-size: 64px;
+  cursor: pointer;
+  text-align: center;
+}
+
+
+span#scores{
+  background: #89D0CC;
+  width: 400px;
+  height: 540px;
+  padding: 20px;
+  margin:20px;
+  border-radius: 30px;
+  display:inline-block;
+
+}
+span#scores> h1{
+  font-family: "Comic Sans MS";
+  font-size: 48pt;
+  color: #FFD02A;
+
+}
