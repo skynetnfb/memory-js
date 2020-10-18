@@ -9,7 +9,6 @@ img{
 }
 div#memory-board{
   background: #89D0CC;
-
   width: 540px;
   height: 540px;
   padding: 20px;
@@ -29,21 +28,61 @@ div#memory-board > div{
   cursor: pointer;
   text-align: center;
 }
-
+.title{
+  background: #89D0CC;
+  width: 1180px;
+  height: 120px;
+  padding: 10px;
+  margin:20px;
+  border-radius: 30px;
+  float: left;
+  text-align: center;
+}
+.title> h1{
+  font-family: "Comic Sans MS";
+  font-size: 48pt;
+  margin:20px;
+  color: #FFD02A;
+}
 
 span#scores{
-  background: #89D0CC;
-  width: 400px;
+  //background: #89D0CC;
+  //background: whitesmoke;
+  background: lightgrey;
+  width: 540px;
   height: 540px;
   padding: 20px;
   margin:20px;
-  border-radius: 30px;
+  //border-radius: 30px;
   display:inline-block;
-
 }
 span#scores> h1{
   font-family: "Comic Sans MS";
   font-size: 48pt;
   color: #FFD02A;
-
 }
+.panel{
+  background: #89D0CC;
+  width: 220px;
+  height: 220px;
+  padding: 10px;
+  margin:10px;
+  border-radius: 10px;
+  display:inline-block;
+  text-align: center;
+}
+
+.panel> h1{
+  font-family: "Comic Sans MS";
+  margin: 0;
+  font-size: 24pt;
+  color: #FFD02A;
+  display:inline-block;
+}
+.panel> h2{
+  font-family: "Comic Sans MS";
+  margin: 0;
+  font-size: 48pt;
+  color: #E79627;
+}
+
