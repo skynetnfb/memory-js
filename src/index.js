@@ -23,7 +23,7 @@ var stop;
 var actual_score_value=0;
 var firstFlippedCard=null;
 
-
+//uTILIZZO OGGETTO JS
 var partita = {
     score: 0,
     errors: 0,
@@ -132,7 +132,6 @@ function newBoard(){
     //ogni elemento viene poi appeso al tavolo da gioco
 
     memory_array.memory_card_shuffle();
-
     for(var i = 0; i < memory_array.length; i++){
         let card= document.createElement('div');
         card.setAttribute('id','card'+i);
@@ -187,6 +186,8 @@ function flip() {
         } else {
             console.log('primo valore:' + first_card.getAttribute('name'));
             console.log('secondo valore:' + this.getAttribute('name'));
+
+            //ARROW FUNCTION CLOSURE
             setTimeout(() => {
                 first_card.removeChild(first_card.lastElementChild);
                 first_card.setAttribute("style", "background-color: #FFD02A;");
