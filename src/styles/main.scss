@@ -2,19 +2,33 @@ $bg: grey;
 
 body{
   background: whitesmoke;
+  border: 1px solid #000000;
+  overflow: auto;
+  width: 100%;
+}
+div#board{
+  width: 620px;
+  margin:30px;
+}
+div#board{
+  background: whitesmoke;
+  background-image: url("../images/bg-paw.jpg");
+  width: 1600px;
+  margin: 0;
 }
 img{
   width: 100px;
   height: 100px;
 }
-div#memory-board{
+.container{
   background: #89D0CC;
   width: 540px;
-  height: 540px;
+  height: fit-content;
   padding: 20px;
-  margin:20px;
+  margin:5px 20px;
   border-radius: 30px;
-  float: left;
+  display: inline-block;
+  text-align: center;
 }
 div#memory-board > div{
   background:#FFD02A;
@@ -28,35 +42,34 @@ div#memory-board > div{
   cursor: pointer;
   text-align: center;
 }
-.title{
+.top-panel{
   background: #89D0CC;
-  width: 1180px;
-  height: 120px;
-  padding: 10px;
+  width: 540px;
+  height: 80px;
+  padding: 20px;
   margin:20px;
   border-radius: 30px;
   float: left;
   text-align: center;
 }
-.title> h1{
+.container> h1{
   font-family: "Comic Sans MS";
   font-size: 48pt;
-  margin:20px;
+  margin:auto;
   color: #FFD02A;
 }
 
-span#scores{
+div#scores{
   //background: #89D0CC;
   //background: whitesmoke;
   background: lightgrey;
   width: 540px;
-  height: 540px;
   padding: 20px;
-  margin:20px;
+  margin:5px 20px;
   //border-radius: 30px;
-  display:inline-block;
+  display:block;
 }
-span#scores> h1{
+.panel#scores> h1{
   font-family: "Comic Sans MS";
   font-size: 48pt;
   color: #FFD02A;
@@ -64,7 +77,6 @@ span#scores> h1{
 .panel{
   background: #89D0CC;
   width: 220px;
-  height: 220px;
   padding: 10px;
   margin:10px;
   border-radius: 10px;
@@ -82,7 +94,8 @@ span#scores> h1{
 .panel> h2{
   font-family: "Comic Sans MS";
   margin: 0;
-  font-size: 48pt;
+  font-size: 24pt;
   color: #E79627;
+  display:inline-block;
 }
 
