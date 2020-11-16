@@ -1,20 +1,19 @@
 $bg: grey;
 
 body{
-  background: whitesmoke;
-  border: 1px solid #000000;
-  overflow: auto;
   width: 100%;
 }
+
 div#board{
   width: 620px;
-  margin:30px;
 }
-div#board{
+div#game{
   background: whitesmoke;
   background-image: url("../images/bg-paw.jpg");
-  width: 1600px;
+  width: 1590px;
+  height: 960px;
   margin: 0;
+  padding: 10px;
 }
 img{
   width: 100px;
@@ -82,6 +81,7 @@ div#scores{
   border-radius: 10px;
   display:inline-block;
   text-align: center;
+  cursor: pointer;
 }
 
 .panel> h1{
