@@ -1,33 +1,32 @@
 import './styles/main.scss';
 
-
 /////////////////CARTE DA GIOCO /////////////////
-var memory_array = [
-    './src/images/1.png','./src/images/1.png',
-    './src/images/2.png','./src/images/2.png',
-    './src/images/3.png','./src/images/3.png',
-    './src/images/4.png','./src/images/4.png',
-    './src/images/5.png','./src/images/5.png',
-    './src/images/6.png','./src/images/6.png',
-    './src/images/7.png','./src/images/7.png',
-    './src/images/8.png','./src/images/8.png'
+const memory_array = [
+    './src/images/1.png', './src/images/1.png',
+    './src/images/2.png', './src/images/2.png',
+    './src/images/3.png', './src/images/3.png',
+    './src/images/4.png', './src/images/4.png',
+    './src/images/5.png', './src/images/5.png',
+    './src/images/6.png', './src/images/6.png',
+    './src/images/7.png', './src/images/7.png',
+    './src/images/8.png', './src/images/8.png'
 ];
 
-var first_card;
-var second_card;
-var stop;
+let first_card;
+let second_card;
+let stop;
 var actual_score_value=0;
-var firstFlippedCard=null;
-var value_timer_text;
-var panel_score_text;
-var panel_error_text;
-var value_score_text;
-var value_error_text;
-var panel_button_text;
-var memory_board;
-var game;
-var board;
-var interval;
+let firstFlippedCard = null;
+let value_timer_text;
+let panel_score_text;
+let panel_error_text;
+let value_score_text;
+let value_error_text;
+let panel_button_text;
+let memory_board;
+let game;
+let board;
+let interval;
 
 
 //UTILIZZO UN OGGETTO JS
@@ -48,17 +47,17 @@ Array.prototype.memory_card_shuffle= function () {
         this[j]=this[i];
         this[i]=temp;
     }
-
 };
 
 /////////////////////////// UTILIZZO DEL PROTOTYPE /////////////////////////////
 
 
 function initBoardGame(){
-
     partita.score=0;
     partita.errors=0;
-    partita.time=300;
+    first_card=undefined;
+    second_card=undefined;
+    partita.time=120;
     clearInterval(interval);
     startTimer();
     game=document.getElementById("game");
@@ -75,8 +74,7 @@ function initBoardGame(){
     board.appendChild(top_panel);
 
     memory_board=document.createElement("div");
-    var scores= document.createElement('div');
-
+    let scores= document.createElement('div');
     memory_board.setAttribute("class","container");
     memory_board.setAttribute("id","memory-board");
     board.appendChild(scores);
@@ -87,9 +85,9 @@ function initBoardGame(){
     scores.setAttribute('id','scores');
     scores.setAttribute('class','container');
 
-    var panel_score= document.createElement('div');
+    let panel_score = document.createElement('div');
     panel_score.setAttribute("class","panel");
-    var panel_error= document.createElement('div');
+    let panel_error= document.createElement('div');
     panel_error.setAttribute("class","panel");
     panel_score_text= document.createElement('h1');
     panel_error_text= document.createElement('h1');
@@ -106,19 +104,16 @@ function initBoardGame(){
     panel_score.appendChild(value_score_text);
     panel_error.appendChild(value_error_text);
 
-    var panel_button= document.createElement('div');
+    const panel_button = document.createElement('div');
     panel_button.setAttribute("class","panel");
     panel_button_text= document.createElement('h1');
     panel_button_text.innerText='Ricomincia';
     panel_button.addEventListener("click", restart, true);
     panel_button.appendChild(panel_button_text);
 
-//
-    ///////////////////////////////////TIMER/////////////////////////
-
-    var panel_timer= document.createElement('div');
+    const panel_timer = document.createElement('div');
     panel_timer.setAttribute("class","panel");
-    var panel_timer_text= document.createElement('h1');
+    const panel_timer_text = document.createElement('h1');
     panel_timer_text.innerText='Timer :';
     panel_timer.appendChild(panel_timer_text);
     value_timer_text= document.createElement('h2');
@@ -126,34 +121,10 @@ function initBoardGame(){
     panel_timer.appendChild(value_timer_text);
     scores.appendChild(panel_timer);
     scores.appendChild(panel_button);
-    /*
-
-
-
-    panel_timer.appendChild(panel_timer_text);
-
-    */
-    /*
-
-    */
-};
-
-
-
-
-
-function newBoard(){
-    initBoardGame();
-    //si mischiano gli elementi dell'array con la funzione aggiunta al prototype dell'array memory_card_shuffle
-    //viene creato un elemento del dom card per ogni elemento dell'array
-    // l'indice viene salvato nell'attributo name della carta
-    //si aggiunge l'vento flip ad ogni carta
-    //ogni elemento viene poi appeso al tavolo da gioco
-
 
     //////////////////////////////////// UTILIZZO FUNZIONE PROTOTYPE/////////////////////////////////////////
     memory_array.memory_card_shuffle();
-    for(var i = 0; i < memory_array.length; i++){
+    for(let i = 0; i < memory_array.length; i++){
         let card= document.createElement('div');
         card.setAttribute('id','card'+i);
         console.log(i.toString());
@@ -163,18 +134,51 @@ function newBoard(){
         card.addEventListener("mouseleave", myMouseLeave, true);
         document.getElementById('memory-board').appendChild(card)
     }
+
+};
+
+
+
+
+
+function newBoard(){
+    game=document.getElementById("game");
+    let start_button=document.createElement("div");
+    start_button.setAttribute("id","start-button");
+    start_button.setAttribute("class","container");
+    start_button.setAttribute("style", "margin-top:400px; cursor: pointer;");
+    let start_text= document.createElement('h1');
+    start_text.innerText='Inizia a Giocare!';
+    start_button.appendChild(start_text);
+
+    function startGame() {
+        game.removeChild(start_button);
+        initBoardGame();
+    }
+
+    start_button.addEventListener("click", startGame);
+    game.appendChild(start_button);
+
+    //initBoardGame();
+
+    //si mischiano gli elementi dell'array con la funzione aggiunta al prototype dell'array memory_card_shuffle
+    //viene creato un elemento del dom card per ogni elemento dell'array
+    // l'indice viene salvato nell'attributo name della carta
+    //si aggiunge l'vento flip ad ogni carta
+    //ogni elemento viene poi appeso al tavolo da gioco
+
+
+
 }
 
 
 function myMouseEnter() {
     this.setAttribute("style", "background-color: #E8B400;");
-    //reset the color after a short delay
 }
 
 
 function myMouseLeave() {
     this.setAttribute("style", "background-color: #FFD02A;");
-    //reset the color after a short delay
 }
 
 //////////////////////////////////// FUNZIONE FLIP CARDS ///////////////////////////////////////////////////
@@ -189,13 +193,6 @@ function flip() {
             if(first_card.id!=this.id) {
                 second_card = this;
                 console.log('dentro  secondo if flip():' + first_card.getAttribute('name'));
-                //flip_div_card(second_card);
-                /*
-            var cardContent = document.createElement('img');
-            cardContent.setAttribute("src",memory_array[this.getAttribute('name')]);
-            this.appendChild(cardContent);
-            this.setAttribute("style", "background-color: red;");
-            second_card=this;*/
             }
         }
         if (first_card !== undefined && second_card != undefined) {
@@ -252,7 +249,6 @@ function flip() {
 
 function flip_div_card(current_card) {
     console.log('DENTRO FLIP EFFECT----------------->'+current_card.getAttribute('name'));
-
     current_card.setAttribute("style", "background-color: orange; transform: rotateY(360deg); transition: transform 0.8s; transform-style: preserve-3d;");
     removeEvents(current_card);
     setTimeout(() => {
@@ -279,7 +275,7 @@ function endGame(){
     clearInterval(interval);
 }
 function startTimer(){
-    var distance=60;
+    let distance = 120;
     ///////////////////////////////// Esempio di Funzione anonima e closure/////////////////////////////////
     interval = setInterval(function () {
         partita.time = --distance ;
@@ -307,6 +303,5 @@ function addEvents(current_card) {
     current_card.addEventListener("mouseleave",myMouseLeave, true);
     current_card.addEventListener("click",flip);
 }
-
 newBoard();
 
