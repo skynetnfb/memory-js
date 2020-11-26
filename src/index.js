@@ -1,5 +1,17 @@
 import './styles/main.scss';
 
+//Progetto Memory Patrol
+//Inizializzazione delle variabili e delle costanti
+//si mischiano gli elementi dell'array con la funzione aggiunta al prototype dell'array memory_card_shuffle
+//viene creato un elemento del dom card per ogni elemento dell'array
+// l'indice della carta viene salvato nell'attributo name della carta
+//si aggiunge l'vento flip ad ogni carta
+//ogni elemento viene poi appeso al tavolo da gioco
+//Un timer scandisce le partite
+//vengono utilizzate due variabili (come una specie semafori) per controllare lo stato delle flipped card per inibire gli eventi di flip
+//se il timer scade vengono flippate tutte le card, si ferma il timer e si rimuovono gli eventi dalle card
+// il CSS base è stato creato nel file .scss mentre i cambiamenti dinamici dello stile degli elementi sono gestiti tramite la funzione setAttribute() di Javascript
+
 /////////////////CARTE DA GIOCO /////////////////
 const memory_array = [
     './src/images/1.png', './src/images/1.png',
@@ -15,7 +27,7 @@ const memory_array = [
 let first_card;
 let second_card;
 let stop;
-var actual_score_value=0;
+let actual_score_value = 0;
 let firstFlippedCard = null;
 let value_timer_text;
 let panel_score_text;
@@ -30,15 +42,15 @@ let interval;
 
 
 //UTILIZZO UN OGGETTO JS
-var partita = {
+const partita = {
     score: 0,
     errors: 0,
-    time:0
+    time: 0
 };
 
 
-/////////////////////////// UTILIZZO DEL PROTOTYPE /////////////////////////////
-
+/////////////////////////// Implementazione di una nuova funzione  del prototype Array /////////////////////////////
+//aggiungo una funzione al prototype dell'array per mischiare gli elementi dell'array
 Array.prototype.memory_card_shuffle= function () {
     let i = this.length, j, temp;
     while(i-->0){
@@ -53,13 +65,16 @@ Array.prototype.memory_card_shuffle= function () {
 
 
 function initBoardGame(){
+    /////////////reset Variabili
     partita.score=0;
     partita.errors=0;
     first_card=undefined;
     second_card=undefined;
-    partita.time=120;
+    partita.time='---';
     clearInterval(interval);
     startTimer();
+
+    //////////creazione dinamica degli elementi del DOM
     game=document.getElementById("game");
     board=document.createElement("div");
     board.setAttribute("class","board");
@@ -72,19 +87,14 @@ function initBoardGame(){
     title.innerText='Memory Patrol';
     top_panel.appendChild(title);
     board.appendChild(top_panel);
-
     memory_board=document.createElement("div");
     let scores= document.createElement('div');
     memory_board.setAttribute("class","container");
     memory_board.setAttribute("id","memory-board");
     board.appendChild(scores);
     board.appendChild(memory_board);
-    console.log(memory_board.getAttribute("id"));
-    console.log(board);
-
     scores.setAttribute('id','scores');
     scores.setAttribute('class','container');
-
     let panel_score = document.createElement('div');
     panel_score.setAttribute("class","panel");
     let panel_error= document.createElement('div');
@@ -103,14 +113,12 @@ function initBoardGame(){
     value_error_text.innerText=partita.errors;
     panel_score.appendChild(value_score_text);
     panel_error.appendChild(value_error_text);
-
     const panel_button = document.createElement('div');
     panel_button.setAttribute("class","panel");
     panel_button_text= document.createElement('h1');
     panel_button_text.innerText='Ricomincia';
     panel_button.addEventListener("click", restart, true);
     panel_button.appendChild(panel_button_text);
-
     const panel_timer = document.createElement('div');
     panel_timer.setAttribute("class","panel");
     const panel_timer_text = document.createElement('h1');
@@ -137,11 +145,8 @@ function initBoardGame(){
 
 };
 
-
-
-
-
 function newBoard(){
+    ////////////////////Creazione dinamica del bottone per iniziare la partita e aggiunta dell'evento
     game=document.getElementById("game");
     let start_button=document.createElement("div");
     start_button.setAttribute("id","start-button");
@@ -150,38 +155,27 @@ function newBoard(){
     let start_text= document.createElement('h1');
     start_text.innerText='Inizia a Giocare!';
     start_button.appendChild(start_text);
-
+    ////////////////CLOSURE/////////////////
     function startGame() {
+        //rimozione del pulsante e chiamata alla funzione di inizializzazione del tavolo da gioco
         game.removeChild(start_button);
         initBoardGame();
     }
-
     start_button.addEventListener("click", startGame);
     game.appendChild(start_button);
-
-    //initBoardGame();
-
-    //si mischiano gli elementi dell'array con la funzione aggiunta al prototype dell'array memory_card_shuffle
-    //viene creato un elemento del dom card per ogni elemento dell'array
-    // l'indice viene salvato nell'attributo name della carta
-    //si aggiunge l'vento flip ad ogni carta
-    //ogni elemento viene poi appeso al tavolo da gioco
-
-
-
 }
-
 
 function myMouseEnter() {
     this.setAttribute("style", "background-color: #E8B400;");
 }
 
-
 function myMouseLeave() {
     this.setAttribute("style", "background-color: #FFD02A;");
 }
 
+
 //////////////////////////////////// FUNZIONE FLIP CARDS ///////////////////////////////////////////////////
+// La funzione flip() gestisce la logica del flip delle carte
 function flip() {
     console.log('flip() if stop');
     if(stop== undefined){
@@ -240,13 +234,9 @@ function flip() {
 
         }
     }
-
-
-
-
-
 }
 
+///////////La funzione flip_div_card() gestisce lo stile e la rimozione dell'evento durante il flip della card
 function flip_div_card(current_card) {
     console.log('DENTRO FLIP EFFECT----------------->'+current_card.getAttribute('name'));
     current_card.setAttribute("style", "background-color: orange; transform: rotateY(360deg); transition: transform 0.8s; transform-style: preserve-3d;");
@@ -274,13 +264,14 @@ function restart(){
 function endGame(){
     clearInterval(interval);
 }
+
 function startTimer(){
     let distance = 120;
     ///////////////////////////////// Esempio di Funzione anonima e closure/////////////////////////////////
     interval = setInterval(function () {
         partita.time = --distance ;
         value_timer_text.innerText=partita.time + "s";
-        console.log('Timer Aggiornamento');
+        //console.log('Timer Aggiornamento'+partita.time + "s");
         if (partita.time < 0) {
             clearInterval(interval);
             value_timer_text.innerText = '0s!';
@@ -288,7 +279,7 @@ function startTimer(){
         }
     }, 1000);
 }
-
+///////////////////// le seguenti funzioni
 function removeEvents(current_card) {
     console.log('REMOVE EVENTS');
     current_card.removeEventListener("mouseenter",myMouseEnter, true);
