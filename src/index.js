@@ -41,12 +41,32 @@ let board;
 let interval;
 
 
-//UTILIZZO UN OGGETTO JS
-const partita = {
-    score: 0,
-    errors: 0,
-    time: 0
+///////////////////// Function Constructor
+function Partita(){
+    this.score= 0;
+    this.errors= 0;
+    this.time= '---';
+    this.setScore=function(score){
+        this.score=score;
+    }
+    this.setErrors=function(errors){
+        this.errors=errors;
+    }
+    this.setTime=function(time){
+        this.time=time;
+    }
+    this.getScore=function(){
+        return this.score;
+    }
+    this.getErrors=function(){
+        return this.errors;
+    }
+    this.getTime=function(){
+        return this.time;
+    }
 };
+
+let currentGame = new Partita();
 
 
 /////////////////////////// Implementazione di una nuova funzione  del prototype Array /////////////////////////////
@@ -61,18 +81,20 @@ Array.prototype.memory_card_shuffle= function () {
     }
 };
 
+
+
 /////////////////////////// UTILIZZO DEL PROTOTYPE /////////////////////////////
 
 
 function initBoardGame(){
     /////////////reset Variabili
-    partita.score=0;
-    partita.errors=0;
+
+    currentGame=new Partita();
     first_card=undefined;
     second_card=undefined;
-    partita.time='---';
     clearInterval(interval);
     startTimer();
+
 
     //////////creazione dinamica degli elementi del DOM
     game=document.getElementById("game");
@@ -93,10 +115,12 @@ function initBoardGame(){
     memory_board.setAttribute("id","memory-board");
     board.appendChild(scores);
     board.appendChild(memory_board);
+
     scores.setAttribute('id','scores');
     scores.setAttribute('class','container');
     let panel_score = document.createElement('div');
     panel_score.setAttribute("class","panel");
+
     let panel_error= document.createElement('div');
     panel_error.setAttribute("class","panel");
     panel_score_text= document.createElement('h1');
@@ -109,8 +133,8 @@ function initBoardGame(){
     scores.appendChild(panel_error);
     value_score_text= document.createElement('h2');
     value_error_text= document.createElement('h2');
-    value_score_text.innerText=partita.score;
-    value_error_text.innerText=partita.errors;
+    value_score_text.innerText=currentGame.getScore();
+    value_error_text.innerText=currentGame.getErrors();
     panel_score.appendChild(value_score_text);
     panel_error.appendChild(value_error_text);
     const panel_button = document.createElement('div');
@@ -125,7 +149,7 @@ function initBoardGame(){
     panel_timer_text.innerText='Timer :';
     panel_timer.appendChild(panel_timer_text);
     value_timer_text= document.createElement('h2');
-    value_timer_text.innerText=partita.time;
+    value_timer_text.innerText=currentGame.getTime();
     panel_timer.appendChild(value_timer_text);
     scores.appendChild(panel_timer);
     scores.appendChild(panel_button);
@@ -133,7 +157,7 @@ function initBoardGame(){
     //////////////////////////////////// UTILIZZO FUNZIONE PROTOTYPE/////////////////////////////////////////
     memory_array.memory_card_shuffle();
     for(let i = 0; i < memory_array.length; i++){
-        let card= document.createElement('div');
+        let card = document.createElement('div');
         card.setAttribute('id','card'+i);
         console.log(i.toString());
         card.setAttribute('name',i.toString());
@@ -178,18 +202,18 @@ function myMouseLeave() {
 // La funzione flip() gestisce la logica del flip delle carte
 function flip() {
     console.log('flip() if stop');
-    if(stop== undefined){
-        if (first_card == undefined) {
+    if(stop === undefined){
+        if (first_card === undefined) {
             first_card = this;
             console.log('dentro primo if  flip():' + first_card.getAttribute('name'));
             flip_div_card(first_card);
-        } else if (first_card != undefined && second_card == undefined ) {
-            if(first_card.id!=this.id) {
+        } else if (first_card !== undefined && second_card === undefined ) {
+            if(first_card.id !== this.id) {
                 second_card = this;
                 console.log('dentro  secondo if flip():' + first_card.getAttribute('name'));
             }
         }
-        if (first_card !== undefined && second_card != undefined) {
+        if (first_card !== undefined && second_card !== undefined) {
             console.log('dentro if check first_card !== undefined && second_card != undefined');
             flip_div_card(second_card);
             if (memory_array[first_card.getAttribute('name')] == memory_array[second_card.getAttribute('name')]) {
@@ -204,11 +228,12 @@ function flip() {
                 second_card = undefined;
                 stop=undefined;
                 actual_score_value = ++actual_score_value;
-                partita.score = ++partita.score;
-                value_score_text.innerText=partita.score;
+                currentGame.setScore(++currentGame.score);
+                //partita.score = ++partita.score;
+                value_score_text.innerText=currentGame.getScore();
                 console.log('score:' + actual_score_value);
-                console.log('partita score:' + partita.score);
-                if(partita.score==8){
+                console.log('partita score:' + currentGame.score);
+                if(currentGame.score==8){
                     endGame();
                 }
             } else {
@@ -226,9 +251,10 @@ function flip() {
                     first_card = undefined;
                     second_card = undefined;
                     stop=undefined;
-                    partita.errors=++partita.errors;
-                    value_error_text.innerText=partita.errors;
-                    console.log('errori:'+ partita.errors)
+                    currentGame.setErrors(++currentGame.errors);
+                    //partita.errors=++partita.errors;
+                    value_error_text.innerText=currentGame.getErrors();
+                    console.log('errori:'+ currentGame.getErrors())
                 }, 1000);
             }
 
@@ -256,6 +282,8 @@ function gameOver(){
         flip_div_card(children[i]);
     }
 };
+
+
 function restart(){
     game.removeChild(board);
     newBoard();
@@ -269,16 +297,18 @@ function startTimer(){
     let distance = 120;
     ///////////////////////////////// Esempio di Funzione anonima e closure/////////////////////////////////
     interval = setInterval(function () {
-        partita.time = --distance ;
-        value_timer_text.innerText=partita.time + "s";
+        currentGame.setTime(--distance);
+        //partita.time = --distance ;
+        value_timer_text.innerText=currentGame.getTime() + "s";
         //console.log('Timer Aggiornamento'+partita.time + "s");
-        if (partita.time < 0) {
+        if (currentGame.getTime() < 0) {
             clearInterval(interval);
             value_timer_text.innerText = '0s!';
             gameOver();
         }
     }, 1000);
 }
+
 ///////////////////// le seguenti funzioni
 function removeEvents(current_card) {
     console.log('REMOVE EVENTS');
