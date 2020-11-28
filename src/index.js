@@ -24,20 +24,9 @@ const memory_array = [
     './src/images/8.png', './src/images/8.png'
 ];
 
-let first_card;
-let second_card;
-let stop;
+
 let actual_score_value = 0;
 let firstFlippedCard = null;
-let value_timer_text;
-let panel_score_text;
-let panel_error_text;
-let value_score_text;
-let value_error_text;
-let panel_button_text;
-let memory_board;
-let game;
-let board;
 let interval;
 
 
@@ -46,28 +35,136 @@ function Partita(){
     this.score= 0;
     this.errors= 0;
     this.time= '---';
+    this.first_card=undefined;
+    this.second_card=undefined;
+    this.stop=undefined;
+
     this.setScore=function(score){
         this.score=score;
-    }
+    };
+
     this.setErrors=function(errors){
         this.errors=errors;
-    }
+    };
+
     this.setTime=function(time){
         this.time=time;
-    }
+    };
+
+    this.setFirstCard=function(firstCard){
+        this.first_card=firstCard;
+    };
+    this.setSecondCard=function(secondCard){
+        this.second_card=secondCard;
+    };
+    this.setStop=function(stop){
+        this.stop=stop;
+    };
+
     this.getScore=function(){
         return this.score;
-    }
+    };
+
     this.getErrors=function(){
         return this.errors;
-    }
+    };
+
     this.getTime=function(){
         return this.time;
+    };
+
+    this.getFirstCard=function(){
+        return this.first_card;
+    };
+
+    this.getSecondCard=function(){
+        return this.second_card;
+    };
+    this.getStop=function(){
+        return this.stop;
+    };
+
+    this.newCardDeck=function(){
+        memory_array.memory_card_shuffle();
+        for(let i = 0; i < memory_array.length; i++){
+            let card = document.createElement('div');
+            card.setAttribute('id','card'+i);
+            console.log(i.toString());
+            card.setAttribute('name',i.toString());
+            card.addEventListener("click", flip);
+            card.addEventListener("mouseenter", myMouseEnter, true);
+            card.addEventListener("mouseleave", myMouseLeave, true);
+            document.getElementById('memory-board').appendChild(card)
+        }
     }
 };
 
-let currentGame = new Partita();
+let currentGame;
 
+function ViewComponent(){
+
+    this.game = document.getElementById("game");
+    this.board = document.createElement("div");
+    this.top_panel = document.createElement("div");
+    this.title = document.createElement('h1');
+    this.memory_board=document.createElement("div");
+    this.scores=document.createElement('div');
+    this.panel_score= document.createElement('div');
+    this.panel_error= document.createElement('div');
+    this.panel_score_text= document.createElement('h1');
+    this.value_score_text= document.createElement('h2');
+    this.value_error_text= document.createElement('h2');
+    this.panel_button = document.createElement('div');
+    this.panel_button_text= document.createElement('h1');
+    this. panel_timer = document.createElement('div');
+    this.value_timer_text= document.createElement('h2');
+    this.panel_error_text= document.createElement('h1');
+    this. panel_timer_text = document.createElement('h1');
+
+
+    this.build = function() {
+        this.board.setAttribute("class","board");
+        this.board.setAttribute("id","board");
+        this.game.appendChild(this.board);
+        this.top_panel.setAttribute("id","title");
+        this.top_panel.setAttribute("class","container");
+        this.title.innerText='Memory Patrol';
+        this.top_panel.appendChild(this.title);
+        this.board.appendChild(this.top_panel);
+        this.memory_board.setAttribute("class","container");
+        this.memory_board.setAttribute("id","memory-board");
+        this.board.appendChild(this.scores);
+        this.board.appendChild(this.memory_board);
+        this.scores.setAttribute('id','scores');
+        this.scores.setAttribute('class','container');
+        this.panel_score.setAttribute("class","panel");
+        this.panel_error.setAttribute("class","panel");
+        this.panel_score_text.innerText='Punteggio : ';
+        this.panel_error_text.innerText='Errori : ';
+        this.panel_score.appendChild(this.panel_score_text);
+        this.panel_error.appendChild(this.panel_error_text);
+        this.scores.appendChild(this.panel_score);
+        this.scores.appendChild(this.panel_error);
+        this.value_score_text.innerText=currentGame.getScore();
+        this.value_error_text.innerText=currentGame.getErrors();
+        this.panel_score.appendChild(this.value_score_text);
+        this.panel_error.appendChild(this.value_error_text);
+        this.panel_button.setAttribute("class","panel");
+        this.panel_button_text.innerText='Ricomincia';
+        this.panel_button.addEventListener("click", restart, true);
+        this.panel_button.appendChild(this.panel_button_text);
+        this.panel_timer.setAttribute("class","panel");
+        this.panel_timer_text.innerText='Timer :';
+        this.panel_timer.appendChild(this.panel_timer_text);
+        this.value_timer_text.innerText=currentGame.getTime();
+        this.panel_timer.appendChild(this.value_timer_text);
+        this.scores.appendChild(this.panel_timer);
+        this.scores.appendChild(this.panel_button);
+
+    }
+}
+
+let viewComponent=new ViewComponent();
 
 /////////////////////////// Implementazione di una nuova funzione  del prototype Array /////////////////////////////
 //aggiungo una funzione al prototype dell'array per mischiare gli elementi dell'array
@@ -88,90 +185,16 @@ Array.prototype.memory_card_shuffle= function () {
 
 function initBoardGame(){
     /////////////reset Variabili
-
     currentGame=new Partita();
-    first_card=undefined;
-    second_card=undefined;
+    viewComponent.build();
+    currentGame.newCardDeck();
     clearInterval(interval);
     startTimer();
-
-
-    //////////creazione dinamica degli elementi del DOM
-    game=document.getElementById("game");
-    board=document.createElement("div");
-    board.setAttribute("class","board");
-    board.setAttribute("id","board");
-    game.appendChild(board);
-    let top_panel=document.createElement("div");
-    top_panel.setAttribute("id","title");
-    top_panel.setAttribute("class","container");
-    let title= document.createElement('h1');
-    title.innerText='Memory Patrol';
-    top_panel.appendChild(title);
-    board.appendChild(top_panel);
-    memory_board=document.createElement("div");
-    let scores= document.createElement('div');
-    memory_board.setAttribute("class","container");
-    memory_board.setAttribute("id","memory-board");
-    board.appendChild(scores);
-    board.appendChild(memory_board);
-
-    scores.setAttribute('id','scores');
-    scores.setAttribute('class','container');
-    let panel_score = document.createElement('div');
-    panel_score.setAttribute("class","panel");
-
-    let panel_error= document.createElement('div');
-    panel_error.setAttribute("class","panel");
-    panel_score_text= document.createElement('h1');
-    panel_error_text= document.createElement('h1');
-    panel_score_text.innerText='Punteggio : ';
-    panel_error_text.innerText='Errori : ';
-    panel_score.appendChild(panel_score_text);
-    panel_error.appendChild(panel_error_text);
-    scores.appendChild(panel_score);
-    scores.appendChild(panel_error);
-    value_score_text= document.createElement('h2');
-    value_error_text= document.createElement('h2');
-    value_score_text.innerText=currentGame.getScore();
-    value_error_text.innerText=currentGame.getErrors();
-    panel_score.appendChild(value_score_text);
-    panel_error.appendChild(value_error_text);
-    const panel_button = document.createElement('div');
-    panel_button.setAttribute("class","panel");
-    panel_button_text= document.createElement('h1');
-    panel_button_text.innerText='Ricomincia';
-    panel_button.addEventListener("click", restart, true);
-    panel_button.appendChild(panel_button_text);
-    const panel_timer = document.createElement('div');
-    panel_timer.setAttribute("class","panel");
-    const panel_timer_text = document.createElement('h1');
-    panel_timer_text.innerText='Timer :';
-    panel_timer.appendChild(panel_timer_text);
-    value_timer_text= document.createElement('h2');
-    value_timer_text.innerText=currentGame.getTime();
-    panel_timer.appendChild(value_timer_text);
-    scores.appendChild(panel_timer);
-    scores.appendChild(panel_button);
-
-    //////////////////////////////////// UTILIZZO FUNZIONE PROTOTYPE/////////////////////////////////////////
-    memory_array.memory_card_shuffle();
-    for(let i = 0; i < memory_array.length; i++){
-        let card = document.createElement('div');
-        card.setAttribute('id','card'+i);
-        console.log(i.toString());
-        card.setAttribute('name',i.toString());
-        card.addEventListener("click", flip);
-        card.addEventListener("mouseenter", myMouseEnter, true);
-        card.addEventListener("mouseleave", myMouseLeave, true);
-        document.getElementById('memory-board').appendChild(card)
-    }
-
 };
 
 function newBoard(){
     ////////////////////Creazione dinamica del bottone per iniziare la partita e aggiunta dell'evento
-    game=document.getElementById("game");
+    viewComponent.game=document.getElementById("game");
     let start_button=document.createElement("div");
     start_button.setAttribute("id","start-button");
     start_button.setAttribute("class","container");
@@ -182,11 +205,11 @@ function newBoard(){
     ////////////////CLOSURE/////////////////
     function startGame() {
         //rimozione del pulsante e chiamata alla funzione di inizializzazione del tavolo da gioco
-        game.removeChild(start_button);
+        viewComponent.game.removeChild(start_button);
         initBoardGame();
     }
     start_button.addEventListener("click", startGame);
-    game.appendChild(start_button);
+    viewComponent.game.appendChild(start_button);
 }
 
 function myMouseEnter() {
@@ -202,58 +225,59 @@ function myMouseLeave() {
 // La funzione flip() gestisce la logica del flip delle carte
 function flip() {
     console.log('flip() if stop');
-    if(stop === undefined){
-        if (first_card === undefined) {
-            first_card = this;
-            console.log('dentro primo if  flip():' + first_card.getAttribute('name'));
-            flip_div_card(first_card);
-        } else if (first_card !== undefined && second_card === undefined ) {
-            if(first_card.id !== this.id) {
-                second_card = this;
-                console.log('dentro  secondo if flip():' + first_card.getAttribute('name'));
+    console.log('valore stop'+currentGame.getStop());
+    if(currentGame.getStop() === undefined){
+        if (currentGame.getFirstCard() === undefined) {
+            currentGame.setFirstCard(this);
+            console.log('dentro primo if  flip():' + currentGame.getFirstCard().getAttribute('name'));
+            flip_div_card(currentGame.getFirstCard());
+        } else if (currentGame.getFirstCard() !== undefined && currentGame.getSecondCard() === undefined ) {
+            if(currentGame.getFirstCard().id !== this.id) {
+                currentGame.setSecondCard(this);
+                console.log('dentro  secondo if flip():' + currentGame.getFirstCard().getAttribute('name'));
             }
         }
-        if (first_card !== undefined && second_card !== undefined) {
-            console.log('dentro if check first_card !== undefined && second_card != undefined');
-            flip_div_card(second_card);
-            if (memory_array[first_card.getAttribute('name')] == memory_array[second_card.getAttribute('name')]) {
+        if (currentGame.getFirstCard() !== undefined && currentGame.getSecondCard() !== undefined) {
+            console.log('dentro if check currentGame.getFirstCard() !== undefined && currentGame.getSecondCard() != undefined');
+            flip_div_card(currentGame.getSecondCard());
+            if (memory_array[currentGame.getFirstCard().getAttribute('name')] == memory_array[currentGame.getSecondCard().getAttribute('name')]) {
                 ///////////////////////////// rimozione eventi sulle card ////////////////////////////
-                console.log('-------------------qui rimozione eventi se le carte sono uguali:'+second_card.id);
-                removeEvents(first_card);
-                removeEvents(second_card);
-                first_card.setAttribute("style", "background-color: green;");
-                second_card.setAttribute("style", "background-color: green;transform: rotateY(360deg); transition: transform 0.8s; transform-style: preserve-3d;");
+                console.log('Rimozione eventi se le carte sono uguali:'+currentGame.getSecondCard().id);
+                removeEvents(currentGame.getFirstCard());
+                removeEvents(currentGame.getSecondCard());
+                currentGame.getFirstCard().setAttribute("style", "background-color: green;");
+                currentGame.getSecondCard().setAttribute("style", "background-color: green;transform: rotateY(360deg); transition: transform 0.8s; transform-style: preserve-3d;");
                 firstFlippedCard = null;
-                first_card = undefined;
-                second_card = undefined;
-                stop=undefined;
+                currentGame.setFirstCard(undefined);
+                currentGame.setSecondCard(undefined);
+                currentGame.setStop(undefined);
                 actual_score_value = ++actual_score_value;
                 currentGame.setScore(++currentGame.score);
                 //partita.score = ++partita.score;
-                value_score_text.innerText=currentGame.getScore();
+                viewComponent.value_score_text.innerText=currentGame.getScore();
                 console.log('score:' + actual_score_value);
                 console.log('partita score:' + currentGame.score);
                 if(currentGame.score==8){
                     endGame();
                 }
             } else {
-                console.log('primo valore:' + first_card.getAttribute('name'));
+                console.log('primo valore:' + currentGame.getFirstCard().getAttribute('name'));
                 console.log('secondo valore:' + this.getAttribute('name'));
                 ///////////////////////////////////////////// ARROW FUNCTION CLOSURE RIPRISTINO CARTE ////////////////////////////////////////////////////
                 setTimeout(() => {
-                    first_card.removeChild(first_card.lastElementChild);
-                    first_card.setAttribute("style", "background-color: #FFD02A;");
-                    this.removeChild(second_card.lastElementChild);
+                    currentGame.getFirstCard().removeChild(currentGame.getFirstCard().lastElementChild);
+                    currentGame.getFirstCard().setAttribute("style", "background-color: #FFD02A;");
+                    this.removeChild(currentGame.getSecondCard().lastElementChild);
                     this.setAttribute("style", "background-color: #FFD02A;");
-                    addEvents(first_card);
+                    addEvents(currentGame.getFirstCard());
                     addEvents(this);
                     //firstFlippedCard = null;
-                    first_card = undefined;
-                    second_card = undefined;
-                    stop=undefined;
+                    currentGame.setFirstCard(undefined);
+                    currentGame.setSecondCard(undefined);
+                    currentGame.setStop(undefined);
                     currentGame.setErrors(++currentGame.errors);
                     //partita.errors=++partita.errors;
-                    value_error_text.innerText=currentGame.getErrors();
+                    viewComponent.value_error_text.innerText=currentGame.getErrors();
                     console.log('errori:'+ currentGame.getErrors())
                 }, 1000);
             }
@@ -272,11 +296,11 @@ function flip_div_card(current_card) {
             cardContent.setAttribute("src", memory_array[current_card.getAttribute('name')]);
             current_card.appendChild(cardContent);
             },300);
-     if(second_card!=undefined)stop=1;
+     if(currentGame.getSecondCard()!=undefined) currentGame.setStop(1);
 }
 
 function gameOver(){
-    var children = memory_board.children;
+    var children = viewComponent.memory_board.children;
     for (var i = 0; i < children.length; i++) {
         children[i].innerHTML='';
         flip_div_card(children[i]);
@@ -285,7 +309,7 @@ function gameOver(){
 
 
 function restart(){
-    game.removeChild(board);
+    viewComponent.game.removeChild(viewComponent.board);
     newBoard();
 };
 
@@ -299,11 +323,11 @@ function startTimer(){
     interval = setInterval(function () {
         currentGame.setTime(--distance);
         //partita.time = --distance ;
-        value_timer_text.innerText=currentGame.getTime() + "s";
+        viewComponent.value_timer_text.innerText=currentGame.getTime() + "s";
         //console.log('Timer Aggiornamento'+partita.time + "s");
         if (currentGame.getTime() < 0) {
             clearInterval(interval);
-            value_timer_text.innerText = '0s!';
+            viewComponent.value_timer_text.innerText = '0s!';
             gameOver();
         }
     }, 1000);
