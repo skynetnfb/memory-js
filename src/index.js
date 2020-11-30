@@ -25,16 +25,14 @@ const memory_array = [
 ];
 
 
-let actual_score_value = 0;
-let firstFlippedCard = null;
 let interval;
-
+let currentGame;
 
 ///////////////////// Function Constructor
 function Partita(){
     this.score= 0;
     this.errors= 0;
-    this.time= '---';
+    this.time= 120;
     this.first_card=undefined;
     this.second_card=undefined;
     this.stop=undefined;
@@ -92,14 +90,14 @@ function Partita(){
             console.log(i.toString());
             card.setAttribute('name',i.toString());
             card.addEventListener("click", flip);
-            card.addEventListener("mouseenter", myMouseEnter, true);
-            card.addEventListener("mouseleave", myMouseLeave, true);
+            card.addEventListener("mouseenter", controllerComponent.myMouseEnter, true);
+            card.addEventListener("mouseleave", controllerComponent.myMouseLeave, true);
             document.getElementById('memory-board').appendChild(card)
         }
     }
 };
 
-let currentGame;
+
 
 function ViewComponent(){
 
@@ -165,7 +163,7 @@ function ViewComponent(){
 }
 
 let viewComponent=new ViewComponent();
-
+let controllerComponent=new ControllerComponent();
 /////////////////////////// Implementazione di una nuova funzione  del prototype Array /////////////////////////////
 //aggiungo una funzione al prototype dell'array per mischiare gli elementi dell'array
 Array.prototype.memory_card_shuffle= function () {
@@ -188,8 +186,8 @@ function initBoardGame(){
     currentGame=new Partita();
     viewComponent.build();
     currentGame.newCardDeck();
-    clearInterval(interval);
-    startTimer();
+    clearInterval(initBoardGame.interval);
+    initBoardGame.interval= startTimer();
 };
 
 function newBoard(){
@@ -212,13 +210,17 @@ function newBoard(){
     viewComponent.game.appendChild(start_button);
 }
 
-function myMouseEnter() {
-    this.setAttribute("style", "background-color: #E8B400;");
+function ControllerComponent(){
+
+    this.myMouseEnter=function() {
+        this.setAttribute("style", "background-color: #E8B400;");
+    };
+
+    this.myMouseLeave=function () {
+        this.setAttribute("style", "background-color: #FFD02A;");
+    };
 }
 
-function myMouseLeave() {
-    this.setAttribute("style", "background-color: #FFD02A;");
-}
 
 
 //////////////////////////////////// FUNZIONE FLIP CARDS ///////////////////////////////////////////////////
@@ -247,15 +249,11 @@ function flip() {
                 removeEvents(currentGame.getSecondCard());
                 currentGame.getFirstCard().setAttribute("style", "background-color: green;");
                 currentGame.getSecondCard().setAttribute("style", "background-color: green;transform: rotateY(360deg); transition: transform 0.8s; transform-style: preserve-3d;");
-                firstFlippedCard = null;
                 currentGame.setFirstCard(undefined);
                 currentGame.setSecondCard(undefined);
                 currentGame.setStop(undefined);
-                actual_score_value = ++actual_score_value;
                 currentGame.setScore(++currentGame.score);
-                //partita.score = ++partita.score;
                 viewComponent.value_score_text.innerText=currentGame.getScore();
-                console.log('score:' + actual_score_value);
                 console.log('partita score:' + currentGame.score);
                 if(currentGame.score==8){
                     endGame();
@@ -271,12 +269,10 @@ function flip() {
                     this.setAttribute("style", "background-color: #FFD02A;");
                     addEvents(currentGame.getFirstCard());
                     addEvents(this);
-                    //firstFlippedCard = null;
                     currentGame.setFirstCard(undefined);
                     currentGame.setSecondCard(undefined);
                     currentGame.setStop(undefined);
                     currentGame.setErrors(++currentGame.errors);
-                    //partita.errors=++partita.errors;
                     viewComponent.value_error_text.innerText=currentGame.getErrors();
                     console.log('errori:'+ currentGame.getErrors())
                 }, 1000);
@@ -292,11 +288,11 @@ function flip_div_card(current_card) {
     current_card.setAttribute("style", "background-color: orange; transform: rotateY(360deg); transition: transform 0.8s; transform-style: preserve-3d;");
     removeEvents(current_card);
     setTimeout(() => {
-            let cardContent = document.createElement('img');
-            cardContent.setAttribute("src", memory_array[current_card.getAttribute('name')]);
-            current_card.appendChild(cardContent);
-            },300);
-     if(currentGame.getSecondCard()!=undefined) currentGame.setStop(1);
+        let cardContent = document.createElement('img');
+        cardContent.setAttribute("src", memory_array[current_card.getAttribute('name')]);
+        current_card.appendChild(cardContent);
+    },300);
+    if(currentGame.getSecondCard()!=undefined) currentGame.setStop(1);
 }
 
 function gameOver(){
@@ -318,7 +314,7 @@ function endGame(){
 }
 
 function startTimer(){
-    let distance = 120;
+    let distance =currentGame.getTime();
     ///////////////////////////////// Esempio di Funzione anonima e closure/////////////////////////////////
     interval = setInterval(function () {
         currentGame.setTime(--distance);
@@ -331,21 +327,22 @@ function startTimer(){
             gameOver();
         }
     }, 1000);
+    return interval;
 }
 
 ///////////////////// le seguenti funzioni
 function removeEvents(current_card) {
     console.log('REMOVE EVENTS');
-    current_card.removeEventListener("mouseenter",myMouseEnter, true);
-    current_card.removeEventListener("mouseleave",myMouseLeave, true);
+    current_card.removeEventListener("mouseenter",controllerComponent.myMouseEnter, true);
+    current_card.removeEventListener("mouseleave",controllerComponent.myMouseLeave, true);
     current_card.removeEventListener("click",flip);
 }
 
 function addEvents(current_card) {
     console.log('ADD EVENTS');
     let cardContent = document.createElement('img');
-    current_card.addEventListener("mouseenter",myMouseEnter, true);
-    current_card.addEventListener("mouseleave",myMouseLeave, true);
+    current_card.addEventListener("mouseenter",controllerComponent.myMouseEnter, true);
+    current_card.addEventListener("mouseleave",controllerComponent.myMouseLeave, true);
     current_card.addEventListener("click",flip);
 }
 newBoard();
