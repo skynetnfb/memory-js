@@ -26,6 +26,8 @@ import './styles/main.scss';
 let currentGame=new dataComponent();
 let viewComponent=new ViewComponent();
 let controllerComponent=new ControllerComponent();
+
+
 /////////////////////////// A scopo didattico viene implementata una nuova funzione  del prototype Array /////////////////////////////
 //aggiunta una funzione al prototype dell'array per mischiare gli elementi dell'array
 Array.prototype.memory_card_shuffle= function () {
