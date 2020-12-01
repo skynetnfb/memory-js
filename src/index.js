@@ -9,7 +9,7 @@ import './styles/main.scss';
 //                                                                                                                    //
 //  Il progetto consiste nella realizzazione di un gioco di carte memory realizzato interamente in Javascript         //
 //  In dettaglio il progetto è stato implementando realizzando 3 constructor function a cui sono stati assegnati      //
-//  diversi comportamenti il dataComponent gestisce i dati e di fatto si compoerta come una classe POJO,              //
+//  diversi comportamenti il DataComponent gestisce i dati e di fatto si compoerta come una classe POJO,              //
 //  il controlleComponent implementa la logica della gestione degli eventi ed infine il viewComponent si occupa       //
 //  della creazione della componente View.                                                                            //
 //  L'implementazione sono state usate il più possibile le caratteristiche del linguaggio Javascript viste a lezione. //
@@ -23,7 +23,7 @@ import './styles/main.scss';
 //                                                      Variabili                                                     //
 //--------------------------------------------------------------------------------------------------------------------//
 
-let currentGame=new dataComponent();
+let currentGame=new DataComponent();
 let viewComponent=new ViewComponent();
 let controllerComponent=new ControllerComponent();
 
@@ -43,10 +43,10 @@ Array.prototype.memory_card_shuffle= function () {
 
 
 //--------------------------------------------------------------------------------------------------------------------//
-//                                      Constructor Function dataComponent                                            //
+//                                      Constructor Function DataComponent                                            //
 //--------------------------------------------------------------------------------------------------------------------//
 
-function dataComponent(){
+function DataComponent(){
     this.score = 0;
     this.errors = 0;
     this.time= 120;
@@ -127,7 +127,7 @@ function dataComponent(){
 
 
 //--------------------------------------------------------------------------------------------------------------------//
-//                                   Constructor Function controllerComponent                                         //
+//                                   Constructor Function ViewComponent                                         //
 //--------------------------------------------------------------------------------------------------------------------//
 
 function ViewComponent(){
@@ -201,7 +201,7 @@ function ViewComponent(){
         this.game.appendChild(viewComponent.start_button);
     }
 }
-//-------------------------- Fine Function Constructor dataComponent ------------------------------//
+//-------------------------- Fine Function Constructor DataComponent ------------------------------//
 
 
 
@@ -237,7 +237,7 @@ function ControllerComponent(){
         //reset Variabili
         viewComponent.memory_board.innerHTML='';
         viewComponent.game.innerHTML='';
-        currentGame=new dataComponent();
+        currentGame=new DataComponent();
         viewComponent.showBoard();
         currentGame.newCardDeck();
         if(this.initBoardGame.interval)clearInterval(this.initBoardGame.interval);
