@@ -213,63 +213,19 @@ function ViewComponent(){
 
 
 function ControllerComponent(){
-    //La funzione flip_div_card() gestisce lo stile e la rimozione dell'evento durante il flip della card
-    this.flip_div_card= function(current_card){
-        console.log('DENTRO FLIP EFFECT----------------->'+current_card.getAttribute('name'));
-        current_card.setAttribute("style", "background-color: orange; transform: rotateY(360deg); transition: transform 0.8s; transform-style: preserve-3d;");
-        controllerComponent.removeEvents(current_card);
-        setTimeout(() => {
-            let cardContent = document.createElement('img');
-            cardContent.setAttribute("src", currentGame.memory_array[current_card.getAttribute('name')]);
-            current_card.appendChild(cardContent);
-        },300);
-        if(currentGame.getSecondCard() != undefined) currentGame.setStop(1);
-    };
 
-    this.myMouseEnter = function() {
-        this.setAttribute("style", "background-color: #E8B400;");
-    };
-
-    this.myMouseLeave = function () {
-        this.setAttribute("style", "background-color: #FFD02A;");
-    };
-    this.initBoardGame = function (){
-        //reset Variabili
-        viewComponent.memory_board.innerHTML='';
-        viewComponent.game.innerHTML='';
-        currentGame=new DataComponent();
-        viewComponent.showBoard();
-        currentGame.newCardDeck();
-        if(this.initBoardGame.interval)clearInterval(this.initBoardGame.interval);
-        this.initBoardGame.interval=controllerComponent.startTimer();
-    };
-
-    this.startGame = function () {
-        controllerComponent.initBoardGame();
-    };
-    this.startTimer = function(){
-        let distance = currentGame.getTime();
-        //Esempio di Funzione
-        let interval = setInterval(function () {
-            currentGame.setTime(--distance);
-            viewComponent.value_timer_text.innerText = currentGame.getTime() + "s";
-            if (currentGame.getTime() < 0) {
-                clearInterval(interval);
-                viewComponent.value_timer_text.innerText = '0s!';
-                controllerComponent.gameOver();
-            }
-        }, 1000);
-        return interval;
+    this.newGame = function (){
+        viewComponent.showStartButton();
     };
 
     this.restart = function(){
         viewComponent.game.removeChild(viewComponent.board);
-        newBoard();
+        controllerComponent.newGame();
     };
 
-     this.gameOver = function(){
-        var children = viewComponent.memory_board.children;
-        for (var i = 0; i < children.length; i++) {
+    this.gameOver = function(){
+        let children = viewComponent.memory_board.children;
+        for (let i = 0; i < children.length; i++) {
             children[i].innerHTML = '';
             controllerComponent.flip_div_card(children[i]);
         }
@@ -289,8 +245,61 @@ function ControllerComponent(){
         current_card.addEventListener("mouseleave",controllerComponent.myMouseLeave, true);
         current_card.addEventListener("click",controllerComponent.flip);
     };
+
     this.endGame = function (){
         clearInterval(controllerComponent.initBoardGame.interval);
+    };
+
+    this.myMouseEnter = function() {
+        this.setAttribute("style", "background-color: #E8B400;");
+    };
+
+    this.myMouseLeave = function () {
+        this.setAttribute("style", "background-color: #FFD02A;");
+    };
+    //La funzione flip_div_card() gestisce lo stile e la rimozione dell'evento durante il flip della card
+    this.flip_div_card= function(current_card){
+        console.log('DENTRO FLIP EFFECT----------------->'+current_card.getAttribute('name'));
+        current_card.setAttribute("style", "background-color: orange; transform: rotateY(360deg); transition: transform 0.8s; transform-style: preserve-3d;");
+        controllerComponent.removeEvents(current_card);
+        setTimeout(() => {
+            let cardContent = document.createElement('img');
+            cardContent.setAttribute("src", currentGame.memory_array[current_card.getAttribute('name')]);
+            current_card.appendChild(cardContent);
+        },300);
+        if(currentGame.getSecondCard() != undefined) currentGame.setStop(1);
+    };
+
+
+    this.initBoardGame = function (){
+        //reset Variabili
+        viewComponent.memory_board.innerHTML='';
+        viewComponent.game.innerHTML='';
+        currentGame=new DataComponent();
+        viewComponent.showBoard();
+        currentGame.newCardDeck();
+        if(this.initBoardGame.interval)clearInterval(this.initBoardGame.interval);
+        this.initBoardGame.interval=controllerComponent.startTimer();
+    };
+
+
+    this.startTimer = function(){
+        let distance = currentGame.getTime();
+        //Esempio di Funzione
+        let interval = setInterval(function () {
+            currentGame.setTime(--distance);
+            viewComponent.value_timer_text.innerText = currentGame.getTime() + "s";
+            if (currentGame.getTime() < 0) {
+                clearInterval(interval);
+                viewComponent.value_timer_text.innerText = '0s!';
+                controllerComponent.gameOver();
+            }
+        }, 1000);
+        return interval;
+    };
+
+    this.startGame = function () {
+        controllerComponent.initBoardGame();
     };
 
     // La funzione flip() gestisce la logica del flip delle carte
@@ -353,14 +362,8 @@ function ControllerComponent(){
 }
 //########################### Fine Function Constructor controllerComponent  ###########################//
 
-
 //--------------------------------------------------------------------------------------------------------------------//
-//                                                Funzione newBoard                                                   //
+//                                     Chiamata a funzione per iniziare la partita                                       //
 //--------------------------------------------------------------------------------------------------------------------//
-
-function newBoard(){
-    ////////////////////Creazione dinamica del bottone per iniziare la partita
-    viewComponent.showStartButton();
-}
-newBoard();
+controllerComponent.newGame();
 
